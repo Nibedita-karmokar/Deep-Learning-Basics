@@ -40,8 +40,7 @@ def positional_encoding(seq_len, d_model):
    
     for pos in range(seq_len):
         for i in range(0, d_model, 2):
-            angle = pos/np.power(10000, (2*i)/d_model)
-           
+            angle = pos/np.power(10000, (2*i)/d_model)    
             PE[pos, i] = np.sin(angle)
            
             if i+1 < d_model:
@@ -79,15 +78,13 @@ class MultiHeadAttention:
         self.Wo = Linear(d_model, d_model)
        
     def split_heads(self, x):
-        batch, seq_len, dim = x.shape
-       
+        batch, seq_len, dim = x.shape 
         x = x.reshape(batch, seq_len, self.num_heads, self.d_k)
        
         return x.transpose(0, 2, 1, 3)
    
     def combine_heads(self, x):
         batch, heads, seq_len, dim = x.shape
-       
         x = x.transpose(0, 2, 1, 3)
        
         return x.reshape(batch, seq_len, heads*dim)
@@ -102,9 +99,7 @@ class MultiHeadAttention:
         V = self.split_heads(V)
        
         attention = scaled_dot_product(Q, K, V)
-       
-        combined = self.combine_heads(attention)
-       
+        combined = self.combine_heads(attention)      
         output = self.Wo.forward(combined)
        
         return output
@@ -119,17 +114,12 @@ class EncoderBlock:
         self.norm2 = LayerNorm(d_model)
        
     def forward(self, x):
-        attn = self.mha.forward(x)
-       
+        attn = self.mha.forward(x)       
         x = self.norm1.forward(x + attn)
-       
         ff = self.ffn.forward(x)
-       
         x = self.norm2.forward(x+ff)
        
-        return x
- 
-   
+        return x   
    
 class TransformerEncoder:
     def __init__(self, num_layers, d_model, num_heads, hidden_dim):
@@ -140,13 +130,9 @@ class TransformerEncoder:
            
     def forward(self, x):
         for layer in range(num_layers):
-            x = layer.forward(x)
-           
+            x = layer.forward(x)  
+            
     return x
-       
-       
-
-   
 
 batch_size = 2
 seq_len = 5
